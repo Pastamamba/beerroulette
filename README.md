@@ -1,27 +1,45 @@
-# React + TypeScript + Vite
+Beer Roulette
+Welcome to Beer Roulette - a fun game designed to spice up your hangout sessions with friends. This application is a modern twist to the classic "spin the wheel" game, where the stakes are... beers!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Overview
+Beer Roulette lets you play a simple game with your friends where you spin a wheel to decide how many beers one should have. The application comes with a predefined set of options but fear not, you can customize the list to your liking!
 
-Currently, two official plugins are available:
+Features
+Spin to Win (or Drink!) - Click the Spin button and wait for the wheel to decide your fate.
+Customizable Options - You're not just stuck with the predefined beer numbers. Click on "Change roulette items" to add, modify, or remove items from the wheel.
+Modern UI - With a clean interface and animations, it's not just a game but an experience!
+How to Use
+Starting the Game: Once you load up the app, you'll be presented with the wheel and a spin button.
+Changing the Options:
+Click on the "Change roulette items" button at the top right corner.
+A pop-up will appear with the current list of options. Modify them as you see fit.
+To remove an item, click the "Delete" button next to it.
+To add a new item, type in the text field at the bottom of the pop-up and click the "Add Item" button.
+Once done, close the pop-up to get back to the main screen.
+Playing the Game:
+Press the "Spin" button and wait to see what the wheel has in store for you!
+Once the wheel stops, the chosen option will be displayed below.
+Installation and Setup
+Clone the repository:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+bash
+Copy code
+git clone [repository-link]
+Navigate to the project directory and install the required dependencies:
 
-## Expanding the ESLint configuration
+bash
+Copy code
+cd beerroulette
+yarn install
+Start the development server:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+bash
+Copy code
+yarn dev
+Visit http://localhost:3000 (or the provided local URL) in your browser to access the app.
 
-- Configure the top-level `parserOptions` property like this:
+Contributing
+Feel free to fork the repository and submit pull requests. For major changes, please open an issue first to discuss what you'd like to change.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+License
+This project is open source. Feel free to use and share with your friends. Let the beer games begin!
