@@ -4,6 +4,7 @@ import BeerRouletteWheel from './BeerRouletteWheel.tsx';
 import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
 
 const WheelForm: FC = () => {
     const [inputList, setInputList] = useState([
@@ -38,13 +39,13 @@ const WheelForm: FC = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
-        setNewItemText(''); // tyhjennä tekstikenttä popoverin sulkemisen yhteydessä
+        setNewItemText('');
     };
 
     const handleAddItem = () => {
         if (newItemText.trim() !== '') {
             setInputList((prevList) => [...prevList, { id: uuidv4(), text: newItemText }]);
-            setNewItemText(''); // tyhjennä tekstikenttä lisäyksen jälkeen
+            setNewItemText('');
         }
     };
 
@@ -52,11 +53,10 @@ const WheelForm: FC = () => {
     const id = open ? 'simple-popover' : undefined;
 
     return (
-        <div className="main-form">
-            <div className="text-title">
-                <h2>Beer roulette</h2>
-            </div>
-            <Button onClick={handleClick}>Change items</Button>
+        <Grid container direction="column" alignItems="center" justifyContent="center" style={{ height: '100vh' }}>
+            <Grid item xs={12} style={{ position: 'absolute', top: 0, right: 0, padding: '1em' }}>
+                <Button onClick={handleClick}>Change roulette items</Button>
+            </Grid>
             <Popover
                 id={id}
                 open={open}
@@ -98,8 +98,10 @@ const WheelForm: FC = () => {
                 />
                 <Button onClick={handleAddItem}>Add Item</Button>
             </Popover>
-            <BeerRouletteWheel data={inputList} />
-        </div>
+            <Grid item xs={8}>
+                <BeerRouletteWheel data={inputList} />
+            </Grid>
+        </Grid>
     );
 };
 
