@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import BeerRouletteWheel from './BeerRouletteWheel.tsx';
 import Popover from '@mui/material/Popover';
@@ -8,69 +8,83 @@ import Grid from '@mui/material/Grid';
 import Switch from '@mui/material/Switch';
 
 const WheelForm: FC = () => {
-    const [inputList, setInputList] = useState([
-        {
-            id: uuidv4(),
-            text: '3 beers',
-        },
-        {
-            id: uuidv4(),
-            text: '4 beers',
-        },
-        {
-            id: uuidv4(),
-            text: '5 beers',
-        },
-        {
-            id: uuidv4(),
-            text: '6 beers',
-        },
-        {
-            id: uuidv4(),
-            text: '7 beers',
-        },
-    ]);
-    const [playerList, setPlayerList] = useState([
-        {
-            id: uuidv4(),
-            text: 'Player 1 😋',
-        },
-        {
-            id: uuidv4(),
-            text: 'Player 2 😆',
-        },
-        {
-            id: uuidv4(),
-            text: 'Player 3 🤣',
-        },
-        {
-            id: uuidv4(),
-            text: 'Player 4 😃',
-        },
-    ]);
-    const [advantages, setAdvantages] = useState([
-        {
-            id: uuidv4(),
-            text: 'Skip card',
-        },
-        {
-            id: uuidv4(),
-            text: 'Nothing',
-        },
-        {
-            id: uuidv4(),
-            text: 'Share 3',
-        },
-        {
-            id: uuidv4(),
-            text: 'Drink 5',
-        },
-    ]);
+    const [inputList, setInputList] = useState(() => {
+        const saved = localStorage.getItem('inputList');
+        return saved
+            ? JSON.parse(saved)
+            : [
+                  { id: uuidv4(), text: '3 beers' },
+                  {
+                      id: uuidv4(),
+                      text: '4 beers',
+                  },
+                  {
+                      id: uuidv4(),
+                      text: '5 beers',
+                  },
+                  {
+                      id: uuidv4(),
+                      text: '6 beers',
+                  },
+                  {
+                      id: uuidv4(),
+                      text: '7 beers',
+                  },
+              ];
+    });
+
+    const [playerList, setPlayerList] = useState(() => {
+        const saved = localStorage.getItem('playerList');
+        return saved
+            ? JSON.parse(saved)
+            : [
+                  { id: uuidv4(), text: 'Player 1 😋' },
+                  { id: uuidv4(), text: 'Player 2 😆' },
+                  { id: uuidv4(), text: 'Player 3 🤣' },
+                  { id: uuidv4(), text: 'Player 4 😃' },
+              ];
+    });
+
+    const [advantages, setAdvantages] = useState(() => {
+        const saved = localStorage.getItem('advantages');
+        return saved
+            ? JSON.parse(saved)
+            : [
+                  {
+                      id: uuidv4(),
+                      text: 'Skip card',
+                  },
+                  {
+                      id: uuidv4(),
+                      text: 'Nothing',
+                  },
+                  {
+                      id: uuidv4(),
+                      text: 'Share 3',
+                  },
+                  {
+                      id: uuidv4(),
+                      text: 'Drink 5',
+                  },
+              ];
+    });
 
     const [showAdvantages, setShowAdvantages] = useState(false);
     const [editingList, setEditingList] = useState<'players' | 'items' | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [newItemText, setNewItemText] = useState('');
+
+    useEffect(() => {
+        localStorage.setItem('inputList', JSON.stringify(inputList));
+    }, [inputList]);
+
+    useEffect(() => {
+        localStorage.setItem('playerList', JSON.stringify(playerList));
+    }, [playerList]);
+
+    useEffect(() => {
+        localStorage.setItem('advantages', JSON.stringify(advantages));
+    }, [advantages]);
 
     const currentList = showAdvantages ? advantages : inputList;
 
@@ -134,36 +148,38 @@ const WheelForm: FC = () => {
                         horizontal: 'center',
                     }}
                 >
-                    {(editingList === 'items' ? currentList : playerList).map((item, index) => (
-                        <div key={item.id}>
-                            <TextField
-                                defaultValue={item.text}
-                                onChange={(e) => {
-                                    const newList = editingList === 'items' ? [...inputList] : [...playerList];
-                                    newList[index].text = e.target.value;
-                                    if (editingList === 'items') {
-                                        setInputList(newList);
-                                    } else if (editingList === 'players') {
-                                        setPlayerList(newList);
-                                    }
-                                }}
-                            />
-                            <Button
-                                onClick={() => {
-                                    const newList = (editingList === 'items' ? inputList : playerList).filter(
-                                        (_, idx) => idx !== index
-                                    );
-                                    if (editingList === 'items') {
-                                        setInputList(newList);
-                                    } else if (editingList === 'players') {
-                                        setPlayerList(newList);
-                                    }
-                                }}
-                            >
-                                Delete
-                            </Button>
-                        </div>
-                    ))}
+                    {(editingList === 'items' ? currentList : playerList).map(
+                        (item: { id: string; text: string }, index: number) => (
+                            <div key={item.id}>
+                                <TextField
+                                    defaultValue={item.text}
+                                    onChange={(e) => {
+                                        const newList = editingList === 'items' ? [...inputList] : [...playerList];
+                                        newList[index].text = e.target.value;
+                                        if (editingList === 'items') {
+                                            setInputList(newList);
+                                        } else if (editingList === 'players') {
+                                            setPlayerList(newList);
+                                        }
+                                    }}
+                                />
+                                <Button
+                                    onClick={() => {
+                                        const newList = (editingList === 'items' ? inputList : playerList).filter(
+                                            (_: any, idx: number) => idx !== index
+                                        );
+                                        if (editingList === 'items') {
+                                            setInputList(newList);
+                                        } else if (editingList === 'players') {
+                                            setPlayerList(newList);
+                                        }
+                                    }}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
+                        )
+                    )}
                     <TextField
                         value={newItemText}
                         onChange={(e) => setNewItemText(e.target.value)}
