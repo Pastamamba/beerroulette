@@ -12,9 +12,10 @@ type DataItem = {
 
 type Props = {
     data: DataItem[];
+    header: string;
 };
 
-const BeerRouletteWheel: FC<Props> = ({ data }) => {
+const BeerRouletteWheel: FC<Props> = ({ data, header }) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
     const [rouletteData, setRouletteData] = useState(data);
@@ -42,7 +43,7 @@ const BeerRouletteWheel: FC<Props> = ({ data }) => {
             <Grid container direction="column" alignItems="center" spacing={3}>
                 <Grid item xs={12}>
                     <Typography variant="h2" align="center" style={{ color: 'white' }}>
-                        Beer roulette
+                        {header}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
@@ -87,7 +88,7 @@ const BeerRouletteWheel: FC<Props> = ({ data }) => {
 
                 <Grid item xs={12}>
                     <Typography variant="h4" align="center" style={{ color: 'white' }}>
-                        Winner
+                        Your price is:
                     </Typography>
                     <Typography variant="h5" align="center" style={{ color: 'white' }}>
                         {!mustSpin ? rouletteData[prizeNumber].completeOption : 'Playing...'}

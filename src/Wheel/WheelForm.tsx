@@ -5,6 +5,7 @@ import Popover from '@mui/material/Popover';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
+import Switch from '@mui/material/Switch';
 
 const WheelForm: FC = () => {
     const [inputList, setInputList] = useState([
@@ -66,9 +67,12 @@ const WheelForm: FC = () => {
         },
     ]);
 
+    const [showAdvantages, setShowAdvantages] = useState(false);
     const [editingList, setEditingList] = useState<'players' | 'items' | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [newItemText, setNewItemText] = useState('');
+
+    const currentList = showAdvantages ? advantages : inputList;
 
     const handleClick = (event: React.MouseEvent<HTMLElement>, listType: 'players' | 'items') => {
         setEditingList(listType);
@@ -83,10 +87,16 @@ const WheelForm: FC = () => {
 
     const handleAddItem = () => {
         if (newItemText.trim() !== '') {
-            if (editingList === 'items') {
-                setInputList((prevList) => [...prevList, { id: uuidv4(), text: newItemText }]);
+            let updatedList;
+            if (showAdvantages && editingList === 'items') {
+                updatedList = [...advantages, { id: uuidv4(), text: newItemText }];
+                setAdvantages(updatedList);
+            } else if (editingList === 'items') {
+                updatedList = [...inputList, { id: uuidv4(), text: newItemText }];
+                setInputList(updatedList);
             } else if (editingList === 'players') {
-                setPlayerList((prevList) => [...prevList, { id: uuidv4(), text: newItemText }]);
+                updatedList = [...playerList, { id: uuidv4(), text: newItemText }];
+                setPlayerList(updatedList);
             }
             setNewItemText('');
         }
@@ -102,6 +112,12 @@ const WheelForm: FC = () => {
                     <Button onClick={(e) => handleClick(e, 'players')}>Players</Button>
                 </Grid>
                 <Grid item xs={12} style={{ position: 'absolute', top: 0, right: 0, padding: '1em' }}>
+                    <Switch
+                        checked={showAdvantages}
+                        onChange={() => setShowAdvantages(!showAdvantages)}
+                        name="showAdvantages"
+                        color="primary"
+                    />
                     <Button onClick={(e) => handleClick(e, 'items')}>Change roulette items</Button>
                 </Grid>
                 <Popover
@@ -118,7 +134,7 @@ const WheelForm: FC = () => {
                         horizontal: 'center',
                     }}
                 >
-                    {(editingList === 'items' ? inputList : playerList).map((item, index) => (
+                    {(editingList === 'items' ? currentList : playerList).map((item, index) => (
                         <div key={item.id}>
                             <TextField
                                 defaultValue={item.text}
@@ -156,7 +172,10 @@ const WheelForm: FC = () => {
                     <Button onClick={handleAddItem}>Add Item</Button>
                 </Popover>
                 <Grid item xs={8}>
-                    <BeerRouletteWheel data={inputList} />
+                    <BeerRouletteWheel
+                        header={showAdvantages ? 'Winner roulette' : 'Loser roulette'}
+                        data={currentList}
+                    />
                 </Grid>
             </Grid>
         </div>
