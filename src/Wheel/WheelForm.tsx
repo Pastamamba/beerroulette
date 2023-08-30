@@ -29,7 +29,6 @@ const WheelForm: FC = () => {
             text: '7 beers',
         },
     ]);
-
     const [playerList, setPlayerList] = useState([
         {
             id: uuidv4(),
@@ -46,6 +45,24 @@ const WheelForm: FC = () => {
         {
             id: uuidv4(),
             text: 'Player 4 😃',
+        },
+    ]);
+    const [advantages, setAdvantages] = useState([
+        {
+            id: uuidv4(),
+            text: 'Skip card',
+        },
+        {
+            id: uuidv4(),
+            text: 'Nothing',
+        },
+        {
+            id: uuidv4(),
+            text: 'Share 3',
+        },
+        {
+            id: uuidv4(),
+            text: 'Drink 5',
         },
     ]);
 
@@ -79,82 +96,70 @@ const WheelForm: FC = () => {
     const id = open ? 'simple-popover' : undefined;
 
     return (
-        <Grid container direction="column" alignItems="center" justifyContent="center" style={{ height: '100vh' }}>
-            <Grid item xs={12} style={{ position: 'absolute', top: 0, left: 0, padding: '1em' }}>
-                <Button onClick={(e) => handleClick(e, 'players')}>Players</Button>
+        <div>
+            <Grid container direction="column" alignItems="center" justifyContent="center" style={{ height: '100vh' }}>
+                <Grid item xs={12} style={{ position: 'absolute', top: 0, left: 0, padding: '1em' }}>
+                    <Button onClick={(e) => handleClick(e, 'players')}>Players</Button>
+                </Grid>
+                <Grid item xs={12} style={{ position: 'absolute', top: 0, right: 0, padding: '1em' }}>
+                    <Button onClick={(e) => handleClick(e, 'items')}>Change roulette items</Button>
+                </Grid>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    {(editingList === 'items' ? inputList : playerList).map((item, index) => (
+                        <div key={item.id}>
+                            <TextField
+                                defaultValue={item.text}
+                                onChange={(e) => {
+                                    const newList = editingList === 'items' ? [...inputList] : [...playerList];
+                                    newList[index].text = e.target.value;
+                                    if (editingList === 'items') {
+                                        setInputList(newList);
+                                    } else if (editingList === 'players') {
+                                        setPlayerList(newList);
+                                    }
+                                }}
+                            />
+                            <Button
+                                onClick={() => {
+                                    const newList = (editingList === 'items' ? inputList : playerList).filter(
+                                        (_, idx) => idx !== index
+                                    );
+                                    if (editingList === 'items') {
+                                        setInputList(newList);
+                                    } else if (editingList === 'players') {
+                                        setPlayerList(newList);
+                                    }
+                                }}
+                            >
+                                Delete
+                            </Button>
+                        </div>
+                    ))}
+                    <TextField
+                        value={newItemText}
+                        onChange={(e) => setNewItemText(e.target.value)}
+                        placeholder="Enter new item"
+                    />
+                    <Button onClick={handleAddItem}>Add Item</Button>
+                </Popover>
+                <Grid item xs={8}>
+                    <BeerRouletteWheel data={inputList} />
+                </Grid>
             </Grid>
-            <Grid item xs={12} style={{ position: 'absolute', top: 0, right: 0, padding: '1em' }}>
-                <Button onClick={(e) => handleClick(e, 'items')}>Change roulette items</Button>
-            </Grid>
-            <div style={{ marginTop: '1em', left: 0, position: 'absolute' }}>
-                {playerList.map((player) => (
-                    <div
-                        style={{
-                            padding: '1em',
-                            color: 'white',
-                            fontSize: '15px',
-                        }}
-                        key={player.id}
-                    >
-                        {player.text}
-                    </div>
-                ))}
-            </div>
-            <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-            >
-                {(editingList === 'items' ? inputList : playerList).map((item, index) => (
-                    <div key={item.id}>
-                        <TextField
-                            defaultValue={item.text}
-                            onChange={(e) => {
-                                const newList = editingList === 'items' ? [...inputList] : [...playerList];
-                                newList[index].text = e.target.value;
-                                if (editingList === 'items') {
-                                    setInputList(newList);
-                                } else if (editingList === 'players') {
-                                    setPlayerList(newList);
-                                }
-                            }}
-                        />
-                        <Button
-                            onClick={() => {
-                                const newList = (editingList === 'items' ? inputList : playerList).filter(
-                                    (_, idx) => idx !== index
-                                );
-                                if (editingList === 'items') {
-                                    setInputList(newList);
-                                } else if (editingList === 'players') {
-                                    setPlayerList(newList);
-                                }
-                            }}
-                        >
-                            Delete
-                        </Button>
-                    </div>
-                ))}
-                <TextField
-                    value={newItemText}
-                    onChange={(e) => setNewItemText(e.target.value)}
-                    placeholder="Enter new item"
-                />
-                <Button onClick={handleAddItem}>Add Item</Button>
-            </Popover>
-            <Grid item xs={8}>
-                <BeerRouletteWheel data={inputList} />
-            </Grid>
-        </Grid>
+        </div>
     );
 };
 
