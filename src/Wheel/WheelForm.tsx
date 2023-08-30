@@ -30,21 +30,47 @@ const WheelForm: FC = () => {
         },
     ]);
 
+    const [playerList, setPlayerList] = useState([
+        {
+            id: uuidv4(),
+            text: 'Player 1 😋',
+        },
+        {
+            id: uuidv4(),
+            text: 'Player 2 😆',
+        },
+        {
+            id: uuidv4(),
+            text: 'Player 3 🤣',
+        },
+        {
+            id: uuidv4(),
+            text: 'Player 4 😃',
+        },
+    ]);
+
+    const [editingList, setEditingList] = useState<'players' | 'items' | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [newItemText, setNewItemText] = useState('');
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLElement>, listType: 'players' | 'items') => {
+        setEditingList(listType);
         setAnchorEl(event.currentTarget);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
+        setEditingList(null);
         setNewItemText('');
     };
 
     const handleAddItem = () => {
         if (newItemText.trim() !== '') {
-            setInputList((prevList) => [...prevList, { id: uuidv4(), text: newItemText }]);
+            if (editingList === 'items') {
+                setInputList((prevList) => [...prevList, { id: uuidv4(), text: newItemText }]);
+            } else if (editingList === 'players') {
+                setPlayerList((prevList) => [...prevList, { id: uuidv4(), text: newItemText }]);
+            }
             setNewItemText('');
         }
     };
@@ -54,9 +80,26 @@ const WheelForm: FC = () => {
 
     return (
         <Grid container direction="column" alignItems="center" justifyContent="center" style={{ height: '100vh' }}>
-            <Grid item xs={12} style={{ position: 'absolute', top: 0, right: 0, padding: '1em' }}>
-                <Button onClick={handleClick}>Change roulette items</Button>
+            <Grid item xs={12} style={{ position: 'absolute', top: 0, left: 0, padding: '1em' }}>
+                <Button onClick={(e) => handleClick(e, 'players')}>Players</Button>
             </Grid>
+            <Grid item xs={12} style={{ position: 'absolute', top: 0, right: 0, padding: '1em' }}>
+                <Button onClick={(e) => handleClick(e, 'items')}>Change roulette items</Button>
+            </Grid>
+            <div style={{ marginTop: '1em', left: 0, position: 'absolute' }}>
+                {playerList.map((player) => (
+                    <div
+                        style={{
+                            padding: '1em',
+                            color: 'white',
+                            fontSize: '15px',
+                        }}
+                        key={player.id}
+                    >
+                        {player.text}
+                    </div>
+                ))}
+            </div>
             <Popover
                 id={id}
                 open={open}
@@ -71,20 +114,30 @@ const WheelForm: FC = () => {
                     horizontal: 'center',
                 }}
             >
-                {inputList.map((item, index) => (
+                {(editingList === 'items' ? inputList : playerList).map((item, index) => (
                     <div key={item.id}>
                         <TextField
                             defaultValue={item.text}
                             onChange={(e) => {
-                                const newList = [...inputList];
+                                const newList = editingList === 'items' ? [...inputList] : [...playerList];
                                 newList[index].text = e.target.value;
-                                setInputList(newList);
+                                if (editingList === 'items') {
+                                    setInputList(newList);
+                                } else if (editingList === 'players') {
+                                    setPlayerList(newList);
+                                }
                             }}
                         />
                         <Button
                             onClick={() => {
-                                const newList = inputList.filter((_, idx) => idx !== index);
-                                setInputList(newList);
+                                const newList = (editingList === 'items' ? inputList : playerList).filter(
+                                    (_, idx) => idx !== index
+                                );
+                                if (editingList === 'items') {
+                                    setInputList(newList);
+                                } else if (editingList === 'players') {
+                                    setPlayerList(newList);
+                                }
                             }}
                         >
                             Delete
