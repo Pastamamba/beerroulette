@@ -88,7 +88,7 @@ const BeerRouletteWheel: FC<Props> = ({ data, header }) => {
 
                 <Grid item xs={12}>
                     <Typography variant="h4" align="center" style={{ color: 'white' }}>
-                        Your price is:
+                        Your prize is:
                     </Typography>
                     <Typography variant="h5" align="center" style={{ color: 'white' }}>
                         {!mustSpin ? rouletteData[prizeNumber].completeOption : 'Playing...'}
